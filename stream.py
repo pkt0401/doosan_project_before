@@ -163,15 +163,13 @@ def construct_prompt_phase1_for_hazard(retrieved_docs, query_activity):
     Generates a prompt listing 3 examples and the user query.
     """
     prompt = ""
-    # 안전하게 iterrows를 사용하여 컬럼명 기준 접근
+    # 각 문서에서 작업활동 및 유해위험요인 추출
     for i, (_, row) in enumerate(retrieved_docs.iterrows(), 1):
         activity = row['content']
         hazard   = row['유해위험요인 및 환경측면 영향']
-        # 한 줄 f-string과 
-으로 줄바꿈 지정
         prompt += f"예시 {i}: 입력: {activity} → {hazard}
 "
-    # 사용자 입력 쿼리
+    # 사용자 입력 쿼리 추가
     prompt += (
         f"입력: {query_activity}
 "
@@ -182,7 +180,8 @@ def construct_prompt_phase1_for_hazard(retrieved_docs, query_activity):
     )
     return prompt
 
-def parse_gpt_output_phase1_for_hazard(gpt_output):
+# Phase 1 GPT 출력 파싱 함수
+(gpt_output):
     try:
         m = re.search(r'\{.*\}', gpt_output, re.DOTALL)
         return eval(m.group())['유해위험요인'] if m else None
