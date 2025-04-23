@@ -163,18 +163,22 @@ def construct_prompt_phase1_for_hazard(retrieved_docs, query_activity):
     Generates a prompt listing 3 examples and the user query.
     """
     prompt = ""
-    # 안전하게 iterrows 를 사용하여 컬럼명 기준 접근
-    for i, doc in enumerate(retrieved_docs.iterrows(), 1):
-        _, row = doc
+    # 안전하게 iterrows를 사용하여 컬럼명 기준 접근
+    for i, (_, row) in enumerate(retrieved_docs.iterrows(), 1):
         activity = row['content']
         hazard   = row['유해위험요인 및 환경측면 영향']
-        # 여기에 \n을 넣어 한 줄 f-string이 제대로 닫히게 합니다.
-        prompt += f"예시 {i}: 입력: {activity} → {hazard}\\n"
+        # newline은 
+으로 명시
+        prompt += f"예시 {i}: 입력: {activity} → {hazard}
+"
     # 사용자 입력 쿼리
     prompt += (
-        f"입력: {query_activity}\\n"
-        "위 작업활동 및 내용을 바탕으로 유해위험요인을 예측하세요.\\n"
-        "JSON으로 반환: {\"유해위험요인\": \"...\"}\\n"
+        f"입력: {query_activity}
+"
+        "위 작업활동 및 내용을 바탕으로 유해위험요인을 예측하세요.
+"
+        "JSON으로 반환: {\"유해위험요인\": \"...\"}
+"
     )
     return prompt
 
