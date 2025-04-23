@@ -160,18 +160,19 @@ def generate_with_gpt(prompt, api_key=None, model="gpt-4o"):
 def construct_prompt_phase1_for_hazard(retrieved_docs, query_activity):
     """
     retrieved_docs: DataFrame with columns 'content' and '유해위험요인 및 환경측면 영향'
-    Generatse a prompt listing up to 3 examples and the user query.
+    Generates a prompt listing up to 3 examples and the user query.
     """
     prompt = ''
     # up to 3 examples
     for i, (_, row) in enumerate(retrieved_docs.iterrows(), 1):
         activity = row['content']
         hazard   = row['유해위험요인 및 환경측면 영향']
+        # 한 줄 문자열로 정확히 종료
         prompt += '예시 {}: 입력: {} → {}
 '.format(i, activity, hazard)
         if i >= 3:
             break
-    # user query
+    # 사용자 입력 쿼리
     prompt += '입력: {}
 '.format(query_activity)
     prompt += '위 작업활동 및 내용을 바탕으로 유해위험요인을 예측하세요.
