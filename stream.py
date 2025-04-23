@@ -167,8 +167,8 @@ def construct_prompt_phase1_for_hazard(retrieved_docs, query_activity):
     for i, (_, row) in enumerate(retrieved_docs.iterrows(), 1):
         activity = row['content']
         hazard   = row['유해위험요인 및 환경측면 영향']
-        # newline은 
-으로 명시
+        # 한 줄 f-string과 
+으로 줄바꿈 지정
         prompt += f"예시 {i}: 입력: {activity} → {hazard}
 "
     # 사용자 입력 쿼리
