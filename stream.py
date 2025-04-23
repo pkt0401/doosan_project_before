@@ -158,13 +158,26 @@ def generate_with_gpt(prompt, api_key=None, model="gpt-4o"):
 
 # Phase 1: 유해위험요인 예측
 def construct_prompt_phase1_for_hazard(retrieved_docs, query_activity):
+    """
+    retrieved_docs: DataFrame with columns 'content' and '유해위험요인 및 환경측면 영향'
+    Generates a prompt listing 3 examples and the user query.
+    """
     prompt = ""
-    for i, row in enumerate(retrieved_docs.itertuples(),1):
-        prompt += f"예시 {i}: 입력: {row.content} → {row._asdict()['유해위험요인 및 환경측면 영향']}\n"
+    # 안전하게 iterrows 를 사용하여 컬럼명 기준 접근
+    for i, doc in enumerate(retrieved_docs.iterrows(), 1):
+        _, row = doc
+        activity = row['content']
+        hazard = row['유해위험요인 및 환경측면 영향']
+        prompt += f"예시 {i}: 입력: {activity} → {hazard}
+"
+    # 사용자 입력 쿼리
     prompt += (
-        f"입력: {query_activity}\n"
-        "위 작업활동 및 내용을 바탕으로 유해위험요인을 예측하세요.\n"
-        "JSON으로 반환: {\"유해위험요인\": \"...\"}\n"
+        f"입력: {query_activity}
+"
+        "위 작업활동 및 내용을 바탕으로 유해위험요인을 예측하세요.
+"
+        "JSON으로 반환: {\"유해위험요인\": \"...\"}
+"
     )
     return prompt
 
