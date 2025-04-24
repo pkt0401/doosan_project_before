@@ -53,7 +53,7 @@ system_texts = {
         "load_data_btn": "데이터 로드 및 인덱스 구성",
         "api_key_warning": "계속하려면 OpenAI API 키를 입력하세요.",
         "data_loading": "데이터를 불러오고 인덱스를 구성하는 중...",
-        "demo_limit_info": "데모 목적으로 {max_texts}개의 텍스트만 임베딩합니다. 실제 환경에서는 전체 데이터를 처리해야 합니다.",
+        "demo_limit_info": "텍스트를 임베딩 하는 중입니다. 잠시만 기다려주세요.",
         "data_load_success": "데이터 로드 및 인덱스 구성 완료! (총 {max_texts}개 항목 처리)",
         "hazard_prediction_header": "유해위험요인 예측",
         "load_first_warning": "먼저 [데이터 로드 및 인덱스 구성] 버튼을 클릭하세요.",
