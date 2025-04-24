@@ -666,7 +666,7 @@ def construct_prompt_phase2(retrieved_docs, activity_text, hazard_text, freq, in
     # 언어별 필드명
     field_names = {
         "Korean": {
-            "improvement_fields": ['개선대책 및 세부관리방안', '개선대책', '개선방안'],
+            "improvement_fields": ['개선대책 및 세부관리방안', '개선대책', '개선방안', 'Corrective Action'],
             "activity": "작업활동 및 내용",
             "hazard": "유해위험요인 및 환경측면 영향",
             "freq": "빈도",
@@ -1139,7 +1139,7 @@ with tabs[1]:
                     st.session_state.embeddings = embeddings_array
                     st.session_state.retriever_pool_df = retriever_pool_df.iloc[:max_texts]  # 임베딩된 부분만 저장
                     
-                    st.success(texts["data_load_success"].format(max_texts=max_texts))
+                    st.success("데이터 로드 및 인덱스 구성 완료!")
                     st.session_state.test_df = test_df
     
     # 사용자 입력 예측 섹션
@@ -1319,7 +1319,7 @@ with tabs[2]:
                     for i, (_, doc) in enumerate(retrieved_docs.iterrows(), 1):
                         # 개선대책 정보 찾기
                         improvement_plan = ""
-                        for field in ['개선대책 및 세부관리방안', '개선대책', '개선방안']:
+                        for field in ['개선대책 및 세부관리방안', '개선대책', '개선방안', 'Corrective Action']:
                             if field in doc and pd.notna(doc[field]):
                                 improvement_plan = doc[field]
                                 break
