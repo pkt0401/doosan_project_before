@@ -53,7 +53,7 @@ system_texts = {
         "load_data_btn": "데이터 로드 및 인덱스 구성",
         "api_key_warning": "계속하려면 OpenAI API 키를 입력하세요.",
         "data_loading": "데이터를 불러오고 인덱스를 구성하는 중...",
-        "demo_limit_info": "텍스트를 임베딩 하는 중입니다. 잠시만 기다려주세요.",
+        "demo_limit_info": "데모 목적으로 {max_texts}개의 텍스트만 임베딩합니다. 실제 환경에서는 전체 데이터를 처리해야 합니다.",
         "data_load_success": "데이터 로드 및 인덱스 구성 완료! (총 {max_texts}개 항목 처리)",
         "hazard_prediction_header": "유해위험요인 예측",
         "load_first_warning": "먼저 [데이터 로드 및 인덱스 구성] 버튼을 클릭하세요.",
@@ -1123,7 +1123,7 @@ with tabs[1]:
                     
                     # 임베딩 생성 (데모에서는 적은 수만 처리, 실제로는 전체 처리)
                     max_texts = min(len(texts_to_embed), 10)  # 데모에서는 최대 10개만 처리
-                    st.info(texts["demo_limit_info"].format(max_texts=max_texts))
+                    st.info("텍스트 임베딩 중입니다...")
                     
                     openai.api_key = api_key
                     embeddings = embed_texts_with_openai(texts_to_embed[:max_texts], api_key=api_key)
@@ -1317,18 +1317,27 @@ with tabs[2]:
                     # 유사 사례 표시
                     st.markdown(f"#### {texts['similar_cases_header']}")
                     for i, (_, doc) in enumerate(retrieved_docs.iterrows(), 1):
-                        st.markdown(
-                            texts["similar_case_text"].format(
-                                i=i,
-                                activity=doc['작업활동 및 내용'],
-                                hazard=doc['유해위험요인 및 환경측면 영향'],
-                                freq=doc['빈도'],
-                                intensity=doc['강도'],
-                                t_value=doc['T'],
-                                grade=doc['등급']
-                            ), 
-                            unsafe_allow_html=True
-                        )
+                        # 개선대책 정보 찾기
+                        improvement_plan = ""
+                        for field in ['개선대책 및 세부관리방안', '개선대책', '개선방안']:
+                            if field in doc and pd.notna(doc[field]):
+                                improvement_plan = doc[field]
+                                break
+                        
+                        improvement_section = ""
+                        if improvement_plan:
+                            improvement_title = "개선대책" if st.session_state.language == "Korean" else "Improvement Plan" if st.session_state.language == "English" else "改进措施"
+                            improvement_section = f"<strong>{improvement_title}:</strong> {improvement_plan}<br>"
+                        
+                        st.markdown(f"""
+                        <div class="similar-case">
+                            <strong>사례 {i}</strong><br>
+                            <strong>작업활동:</strong> {doc['작업활동 및 내용']}<br>
+                            <strong>유해위험요인:</strong> {doc['유해위험요인 및 환경측면 영향']}<br>
+                            <strong>위험도:</strong> 빈도 {doc['빈도']}, 강도 {doc['강도']}, T값 {doc['T']} (등급 {doc['등급']})<br>
+                            {improvement_section}
+                        </div>
+                        """, unsafe_allow_html=True)
                 
                 # 개선대책 생성 프롬프트 구성
                 prompt = construct_prompt_phase2(
